@@ -1,7 +1,7 @@
 const sequelize = require('../db');
 
-const User = require("./User")
-const  Note = require("./Notes")
+const User = require("./User.model")
+const  Note = require("./Notes.model")
 
 User.hasMany(Note, { foreignKey: 'userId', as: 'notes' });
 Note.belongsTo(User, { foreignKey: 'userId', as: 'user' });

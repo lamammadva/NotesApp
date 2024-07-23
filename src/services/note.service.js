@@ -1,19 +1,20 @@
 const {Note}= require("../models")
 
 const noteCreate= async (params) => {
-    const {title, description,user_id} = params
+    const {title, description,userId} = params
+    console.log(params);
     const data = await Note.create({
         title,
         description,
-        user_id
+        userId
     })
     return data
     
 
 
 }
-const noteAll = async ()=>{
-    const data = await Note.findAll()
+const noteAll = async (userId)=>{
+    const data = await Note.findAll({where: {userId}})
     return data
 }
 const noteById = async (id)=>{
