@@ -36,9 +36,8 @@ const noteCreate = async (req, res) => {
     }
 }
 const noteUpdate = async (req, res) => {
-    const {id} = req.params
     const {user} = req
-    const params = {...req.body, userId: user.id}
+    const params = {...req.body,noteid:req.params.id, userId: user.id}
     try {
         const data = await noteServices.noteUpdate(id, params)
         res.status(200).json(data)
@@ -49,9 +48,10 @@ const noteUpdate = async (req, res) => {
     }
 }
 const noteDelete = async (req, res) => {
-    const {id} = req.params
+    const {user} = req
+    const params = {noteId:req.params.id, userId:user.id}
     try {
-        await  noteServices.noteDelete(id)
+        await  noteServices.noteDelete(params)
         res.status(200).json("successfully")
     } catch (error) {
         res.status(409).json({
