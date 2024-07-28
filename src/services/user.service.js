@@ -1,12 +1,15 @@
+const { appError } = require("../errors")
 const User = require("../models/User.model")
+const { hasPassword } = require("../utils/bcrypt")
 
 const createUsers = async(params)=>{
     const {username,password} = params
     let existsUser = await findByUsername(username)
-    if(existsUser) throw new Error('user already exists')
+    let hash = await hasPassword(password)
+    if(existsUser) throw new appError('user already exists',409)
     let user = await User.create({
         username,
-        password
+        password:hash
 
     })
     return user

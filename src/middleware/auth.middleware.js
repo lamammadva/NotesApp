@@ -10,7 +10,6 @@ const authMiddleware = async (req,res, next )=>{
     token  = token.split(' ')[1]
     const result = decodePayload(token)
 
-
     if(!result?.userId){
         return res.status(401).json({msg: "Token is invalid"})
     }

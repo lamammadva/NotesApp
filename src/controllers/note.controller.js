@@ -1,63 +1,58 @@
-const {noteServices} = require("../services")
+const { noteServices } = require("../services")
 
 const noteAll = async (req, res) => {
-    const {user} = req
-    try {
-        const data = await noteServices.noteAll(user.id)
-        res.status(200).json(data)
-    } catch (error) {
-        res.status(404).json({error:"not found note"})
-        
-    }
+    const { user } = req
+    const data = await noteServices.noteAll(user.id)
+    res.status(200).json(data)
+
 }
-const noteById = async (req, res) => {
-    const {id} = req.params
+const noteById = async (req, res,next) => {
     try {
-        const  data = await noteServices.noteById(id)
+        const { id } = req.params
+        const data = await noteServices.noteById(id)
         res.status(200).json(data)
-    } catch (error) {
-        res.status(409).json({message:error?.message})
         
+    } catch (error) {
+        next(error)
     }
+
 }
-const noteCreate = async (req, res) => {
-    const {user} = req
-    const params = {...req.body, userId: user.id}
+const noteCreate = async (req, res,next) => {
+    const { user } = req
     try {
+        const params = { ...req.body, userId: user.id }
         const data = await noteServices.noteCreate(params)
         res.json({
-            status:true,
-            message:"Note created",
+            status: true,
+            message: "Note created",
             data
         })
-    } catch (error) {
-        console.error("Error creating note:", error); 
         
+    } catch (error) {
+        next(error)
     }
+
 }
-const noteUpdate = async (req, res) => {
-    const {user} = req
-    const params = {...req.body,noteid:req.params.id, userId: user.id}
+const noteUpdate = async (req, res,next) => {
+    const { user } = req
     try {
-        const data = await noteServices.noteUpdate(id, params)
+        const params = { ...req.body, noteId: req.params.id, userId: user.id }
+        const data = await noteServices.noteUpdate(params)
         res.status(200).json(data)
     } catch (error) {
-        res.status(409).json({
-            message:error?.message
-        })
+        next(error)
     }
+
 }
-const noteDelete = async (req, res) => {
-    const {user} = req
-    const params = {noteId:req.params.id, userId:user.id}
+const noteDelete = async (req, res,next) => {
+    const { user } = req
+    const params = { noteId: req.params.id, userId: user.id }
     try {
-        await  noteServices.noteDelete(params)
+        await noteServices.noteDelete(params)
         res.status(200).json("successfully")
     } catch (error) {
-        res.status(409).json({
-            message:error?.message
-        })
-        
+        next(error)
+
     }
 }
 

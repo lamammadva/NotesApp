@@ -1,15 +1,15 @@
+const { NotfoundError } = require("../errors")
 const {Note}= require("../models")
 
 
 const findUserNote = async (noteId,userId) => {
-    const note = await Note.findOne({where:{noteId,userId}})
+    const note = await Note.findOne({where:{id:noteId,userId}})
     return note
 
 }
 
 const noteCreate= async (params) => {
     const {title, description,userId} = params
-    console.log(params);
     const data = await Note.create({
         title,
         description,
@@ -27,16 +27,15 @@ const noteAll = async (userId)=>{
 const noteById = async (id)=>{
     const data  = await Note.findByPk(id)
     if(!data){
-        throw new Error(`not found note with ${id}`)
+        throw new NotfoundError(`not found note with ${id}`)
     }
     return data
 
 }
 const noteUpdate = async (params)=>{
     const {noteId,userId,title,description} = params
-
-    const data = await noteById(id)
-    const updateData = await data.update(params)
+    let user = await findUserNote(noteId,userId)
+    const updateData = await Note.update({title,description},{where:{id:user.id}})
     return updateData
 
 
@@ -44,7 +43,7 @@ const noteUpdate = async (params)=>{
 const noteDelete = async (params)=>{
     const {noteId,userId} = params
     let data = await findUserNote(noteId,userId)
-    if (!data) throw new Error("Note is not found");
+    if (!data) throw new NotfoundError ("Note is not found");
     await Note.destroy({where:{id:data.id}})
     return true
 }

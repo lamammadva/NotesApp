@@ -1,3 +1,5 @@
+const { appError, NotfoundError, validationError } = require("../errors")
+const { checkPassword } = require("../utils/bcrypt")
 const { encodePayload } = require("../utils/jwt.util")
 const { findByUsername: findUserByUsername } = require("./user.service")
 
@@ -5,11 +7,12 @@ const login = async (params)=>{
     const {username,password} = params || {}
     let user = await findUserByUsername(username)
     if(!user) {
-        throw new Error('username_not_found')
+        throw new  NotfoundError("username not found")
     }
     user = user.toJSON()
-    if(password !== user.password){
-        throw new Error('password_incorrect')
+    let check = await checkPassword(password, user.password)
+    if(!check){
+        throw new validationError('password incorrect')
     }
     const payload = {
         userId:user.id

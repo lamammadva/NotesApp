@@ -6,6 +6,6 @@ const { authMiddleware } = require('../middleware/auth.middleware')
 
 
 router.use("/users",userRouter)
-router.use("/notes",authMiddleware, noteRouter)
+router.use("/notes", authMiddleware, noteRouter)
 
 module.exports = router
